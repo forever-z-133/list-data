@@ -1,0 +1,21 @@
+{
+  "name": "list-data",
+  "version": "1.0.1",
+  "description": "分页数据请求的公共方法，可简化代码",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forever-z-133/list-data.git"
+  },
+  "keywords": [
+    "list-data",
+    "ajax-page-list",
+    "分页数据请求"
+  ],
+  "author": "forever-z-133",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forever-z-133/list-data/issues"
+  }
+}
