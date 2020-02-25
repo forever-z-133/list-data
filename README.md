@@ -54,7 +54,12 @@ new Vue({
       this.ListManager.update();
     },
     onPullDownRefresh() {
-      // 下拉刷新 或 更换tab时·
+      // 下拉刷新 或 更换tab时
+      this.ListManager.refresh();
+    },
+    changePage(page = 1) {
+      // 表格类的应用，跳页功能
+      ListManager.list.page = page;
       this.ListManager.refresh();
     }
   }
@@ -78,46 +83,55 @@ class ListData {
     page: 1,
     status: 'WAIT' // WAIT LOADING NODATA EMPTY
   },
+  // 用于：1. 统一修改 size 初始值；2. 统一添加更多联动项比如 total
+  beforeInit(config, list) {},
+  // 用于：1. 统一 size 改 pageSize；2. 统一添加 loading
   beforeAjax(params) {},
+  // 每个实例应该都要改此方法，且需注意 bind(this) 哟
   ajax(params, callback) {},
+  // 用于：1. 统一 res.result 结构；2. 统一取消加载图；3. 统一报错弹窗
   beforePostData(res, params) {},
+  // 用于个性化结果调整，比如返回 total
   postData(res, params) {},
+  // 用于个性化列表数据调整，比如每项加上已选择
   convert(newData) {},
-  after(data, list) {},
+  // 本次过程全部完成
+  finish(data, list) {},
+  // --- 三个常调用的方法
   refresh(params) {},
   update(params) {},
   stateChange(list, key, value) {}
 }
 ```
 
-比如，可进行类似以下操作的拓展：
-
-- 可在 beforeAjax 或 ajax 阶段改变入参或加上 loading 弹层
-- 可在 beforePostData 阶段加入取消 loading 弹层和报错弹层等
-- 可在 postData 阶段取用数据的不同层级作为根数据，并部分处理请求数据
-- 可在 convert 阶段对列表数据进行一定的遍历操作
+可进行类似以下操作的拓展：
 
 ```js
+ListData.prototype.beforeInit = function(config, list) {
+  config.size = 15;
+  list.total = 0;
+};
 ListManager.beforeAjax = params => {
   Toast.loading('加载中');
   const { page, size } = params;
   return { pageNo: page, pageSize: size, type: '1' };
 };
 ListManager.beforePostData = res => {
+  Toast.hide();
   if (res.status !==) {
     Toast.error(res.errMsg || '请求错误');
-    return false;
+    return true; // 返回 true 则不继续运行
   }
-  Toast.hide();
 };
 ListManager.postData = res => {
   const data = res.result.list || [];
   this.total = res.result.total; // 获取数据后用在别处
-  res.result = data;  // 注意：data 需从 res.result 处取得
+  res.result = data;  // 注意：列表数据会从 res.result 中取
 }
 ListManager.convert = data => {
   data.forEach(item => (item.flag = true));
 }
 ```
 
-当然你也可以做二次封装，利用 ListData.prototype 始终复用 beforePostData 而不用每个实例都书写一次。
+其中，你也可以利用 ListData.prototype 做二次封装，  
+这样就不用每次 new ListData 时都修改实例方法了。
