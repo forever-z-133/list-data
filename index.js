@@ -77,10 +77,11 @@ export default class ListData {
     if (this.convert) {
       newData = this.convert(newData);
     }
+    const { page: origPage } = this.config;
     const { data: oldData, page: oldPage, size } = this.list;
     let status;
     const data = oldData.concat(newData);
-    if (newData.length < 1 && oldPage <= 1) {
+    if (newData.length < 1 && oldPage <= origPage) {
       status = 'NODATA';
       this.setState('status', status);
     } else {

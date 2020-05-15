@@ -1,6 +1,6 @@
 {
   "name": "list-data",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "分页数据请求的公共方法，可简化代码",
   "main": "index.js",
   "scripts": {},
