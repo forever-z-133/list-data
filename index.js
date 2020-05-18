@@ -38,9 +38,10 @@ export default class ListData {
   }
   update(params, isRefresh) {
     if (isRefresh) {
-      const { status, data } = this.config;
+      const { status, data, page } = this.config;
       this.setState('status', status);
       this.setState('data', data);
+      this.setState('page', page);
     }
 
     if (this.list.status !== 'WAIT') return;

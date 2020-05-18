@@ -81,9 +81,10 @@ export class _ListData {
   }
   private _update(params?: any, isRefresh: boolean = false): void {
     if (isRefresh) {
-      const { status, data } = this.config;
+      const { status, data, page } = this.config;
       this.list.status = status;
       this.list.data = data;
+      this.list.page = page;
       this._setState();
     }
 
